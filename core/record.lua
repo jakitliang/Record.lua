@@ -57,13 +57,58 @@ function Record:save()
   return false
 end
 
+--- Fetch records
+--- @param limit? integer|table The count and offset of result, eg: 5 or {5, 10}
+--- @param order? boolean|table The order of result, eg: false(reverse) or {id, true}
+--- @return table result
+function Record:fetch(limit, order)
+  return self:find(nil, limit, order)
+end
+
+function Record:fetchOne()
+  return self:fetch(1)
+end
+
 --- Find records by condition
+--- @param condition? table The conditions to filter the result
+--- @param limit? integer|table The count and offset of result, eg: 5 or {5, 10}
+--- @param order? boolean|string|table The order of result, eg: false(reverse) or {id, true}
+--- @return table result
+function Record:find(condition, limit, order)
+  local query = self:findBy(condition)
+
+  if order then
+    query:orderBy(order)
+  end
+
+  if type(limit) == 'number' then
+    return query:fetch(limit)
+
+  elseif type(limit) == 'table' then
+    return query:fetch(limit[1], limit[2])
+  end
+
+  return query:fetchAll()
+end
+
+--- Find records by condition
+--- @param condition? table The conditions to filter the result
+--- @param order? boolean|string|table The order of result, eg: false(reverse) or {id, true}
+--- @return table result
+function Record:findOne(condition, order)
+  return self:find(condition, 1, order)
+end
+
+--- Find records by condition
+--- @param condition? table The conditions to filter the result
 --- @return Query query
 function Record:findBy(condition)
   local query = self:newQuery()
-  for k, v in pairs(condition) do
-    query:where({k, v})
+
+  if condition then
+    query:where(condition)
   end
+
   return query
 end
 
@@ -82,9 +127,7 @@ function Record:destroy(condition)
   local query = self:newQuery()
 
   if condition then
-    for k, v in pairs(condition) do
-      query:where({k, v})
-    end
+    query:where(condition)
 
   elseif self.id then
     query:where({'id', self.id})
@@ -92,6 +135,14 @@ function Record:destroy(condition)
 
   query:delete()
   return self:query(query)
+end
+
+function Record:count(condition)
+  if condition then
+    return self:findBy(condition):count()
+  end
+
+  return self:newQuery():count()
 end
 
 --- Execute a query
@@ -103,7 +154,6 @@ function Record:query(query)
     query.sql = sql
   end
 
-  -- print(query.sql)
   Record.lastQuery = query
   return query:exec()
 end
@@ -130,6 +180,13 @@ end
 --- @return boolean status
 function Record:commit()
   return self.device:commit()
+end
+
+function Record:transaction(callback)
+  self:begin()
+  callback(function ()
+    self:rollback()
+  end)
 end
 
 return Record

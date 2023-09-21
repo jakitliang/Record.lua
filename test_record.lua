@@ -40,38 +40,218 @@ print('====== Update ======')
 -- u.age = 50
 -- print(u:update())
 
+print('====== Fetch All Result ======')
+
+-- local result = Users:fetch()
+-- for i = 1, #result do
+--   print('id', result[i].id)
+--   print('name', result[i].name)
+--   print('age', result[i].age)
+-- end
+
+print('====== Fetch One Result ======')
+
+-- local result = Users:fetchOne()
+-- for i = 1, #result do
+--   print('id', result[i].id)
+--   print('name', result[i].name)
+--   print('age', result[i].age)
+-- end
+
+print('====== Fetch All Result ======')
+
+print('====== Find All Result By Condition ======')
+
+-- local result = Users:find({id = {'<', 6}})
+-- for i = 1, #result do
+--   print('id', result[i].id)
+--   print('name', result[i].name)
+--   print('age', result[i].age)
+-- end
+
+print('====== Find only 3 results and reverse the result order ======')
+
+local result = Users:find({id = {'<', 6}}, 3, true)
+for i = 1, #result do
+  print('id', result[i].id)
+  print('name', result[i].name)
+  print('age', result[i].age)
+end
+
+print('====== Find only 3 results and sort the result by age ======')
+
+local result = Users:find({id = {'<', 6}}, 3, 'age')
+for i = 1, #result do
+  print('id', result[i].id)
+  print('name', result[i].name)
+  print('age', result[i].age)
+end
+
+print('====== Find 2 results from index 1 ======')
+
+local result = Users:find({id = {'<', 6}}, {1, 2})
+for i = 1, #result do
+  print('id', result[i].id)
+  print('name', result[i].name)
+  print('age', result[i].age)
+end
+
+print('====== Find only One result ======')
+
+local result = Users:findOne({id = {'<', 6}})
+for i = 1, #result do
+  print('id', result[i].id)
+  print('name', result[i].name)
+  print('age', result[i].age)
+end
+
+print('====== Find id in set (2, 3) ======')
+
+local result = Users:find({id = {'in', {2, 3}}})
+for i = 1, #result do
+  print('id', result[i].id)
+  print('name', result[i].name)
+  print('age', result[i].age)
+end
+
+print('====== Find id in set (2, 3) ======')
+
+local result = Users:find({id = {'in', {2, 3}}})
+for i = 1, #result do
+  print('id', result[i].id)
+  print('name', result[i].name)
+  print('age', result[i].age)
+end
+
+print('====== Then update their "age" to 50 ======')
+
+local result = Users:find({id = {'in', {2, 3}}})
+for i = 1, #result do
+  print('id', result[i].id)
+  print('name', result[i].name)
+  print('age', result[i].age, ' => 50')
+  result[i].age = 50
+  result[i]:update() -- Update this data!
+end
+
+print('====== You can see the change now! ======')
+
+local result = Users:find({id = {'in', {2, 3}}})
+for i = 1, #result do
+  print('id', result[i].id)
+  print('name', result[i].name)
+  print('age', result[i].age)
+end
+
+print()
+print('============================')
+print('====== [Senior Usage] ======')
+print('============================')
+print()
+
 print('====== Find One ======')
 
-local q = Users:findBy({id = 3})
-for row in q:fetchOne() do
-  for k, v in pairs(row) do
-    print(k, v)
-  end
+local rows = Users:findBy({id = 3}):fetchOne()
+for i = 1, #rows do
+  print('id', rows[i].id)
+  print('name', rows[i].name)
+  print('age', rows[i].age)
 end
 
-print('====== Find All ======')
+print('====== Find the user [id > 8] or [name = demo1] or [id = 2] ======')
 
-local q = Users:findBy({id = {'>', 3}}):orderBy('id', true)
-for row in q:fetchAll() do
-  for k, v in pairs(row) do
-    print(k, v)
-  end
+local rows = Users:findBy({id = {'>', 8}}):orWhere({name = 'demo1', id = '2'}):fetchAll()
+for i = 1, #rows do
+  print('id', rows[i].id)
+  print('name', rows[i].name)
+  print('age', rows[i].age)
 end
 
-print('====== Find All With Limit ======')
+print()
+print('=========================================')
+print('====== Boss task: Data Transaction ======')
+print('=========================================')
+print()
 
-local q = Users:findBy({id = {'>', 3}}):orderBy('id', true)
-for row in q:fetch(1, 3) do
-  for k, v in pairs(row) do
-    print(k, v)
-  end
+print('====== Find out data [id in (2, 3)] and modify them ======')
+
+local rows = Users:find({id = {'in', {2, 3}}})
+
+Users:begin()
+
+for i = 1, #rows do
+  print('id', rows[i].id)
+  print('name', rows[i].name)
+  print('age', rows[i].age)
+  rows[i].age = 12345
+  rows[i]:update()
 end
 
-print('====== Find Total Count ======')
+print('====== Rolling back!!!!! (Undo changes) ======')
 
-local q = Users:findBy({id = {'>', 3}}):orderBy('id', true)
-for row in q:count() do
-  for k, v in pairs(row) do
-    print(k, v)
+Users:rollback()
+
+local rows = Users:find({id = {'in', {2, 3}}})
+
+for i = 1, #rows do
+  print('id', rows[i].id)
+  print('name', rows[i].name)
+  print('age', rows[i].age)
+end
+
+print('====== Find out data [id in (2, 3)] and modify them ======')
+
+local rows = Users:find({id = {'in', {2, 3}}})
+
+Users:begin()
+
+for i = 1, #rows do
+  print('id', rows[i].id)
+  print('name', rows[i].name)
+  print('age', rows[i].age)
+  rows[i].age = 12345
+  rows[i]:update()
+end
+
+print('====== Commit it!!!!! (Commit changes) ======')
+
+Users:commit()
+
+local rows = Users:find({id = {'in', {2, 3}}})
+
+for i = 1, #rows do
+  print('id', rows[i].id)
+  print('name', rows[i].name)
+  print('age', rows[i].age)
+end
+
+print('====== Promise style Transaction ======')
+
+Users:transaction(function (onFail)
+  local rows = Users:find({id = {'in', {2, 3}}})
+  for i = 1, #rows do
+    print('id', rows[i].id)
+    print('name', rows[i].name)
+    print('age', rows[i].age)
+    rows[i].age = 999
+    rows[i]:update()
   end
+  if true then
+    return onFail() -- Undo changes and return
+  end
+  -- The code below will not do
+  rows = Users:find({id = {'in', {2, 3}}})
+  for i = 1, #rows do
+    print('id', rows[i].id)
+    print('name', rows[i].name)
+    print('age', rows[i].age)
+  end
+end)
+
+-- You can see data is successfuly rollback
+rows = Users:find({id = {'in', {2, 3}}})
+for i = 1, #rows do
+  print('id', rows[i].id)
+  print('name', rows[i].name)
+  print('age', rows[i].age)
 end

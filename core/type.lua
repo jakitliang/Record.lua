@@ -132,6 +132,9 @@ function TypeMetatable:__index(k)
 
   elseif k == 'mixin' then
     return Mixin
+
+  elseif k == 'isType' then
+    return true
   end
 end
 
