@@ -54,6 +54,24 @@ print('====== 获取：所有记录 ======')
 --   print('age', result[i].age)
 -- end
 
+print('====== 获取：只拉 5 条记录，按 年龄 排序 ======')
+
+-- local result = Users:fetch(5, 'age') -- 这里参数 5 是条数，age 是[年龄]字段名称
+-- for i = 1, #result do
+--   print('id', result[i].id)
+--   print('name', result[i].name)
+--   print('age', result[i].age)
+-- end
+
+print('====== 获取：只拉 5 条记录，按 年龄逆向排序 ======')
+
+-- local result = Users:fetch(5, {'age', true}) -- 带进参数 true 表示 reverse(逆排)
+-- for i = 1, #result do
+--   print('id', result[i].id)
+--   print('name', result[i].name)
+--   print('age', result[i].age)
+-- end
+
 print('====== 获取：只拉 1 条记录 ======')
 
 -- 只有 1 条记录了，所以不需要 for，但要判断 是否为空
