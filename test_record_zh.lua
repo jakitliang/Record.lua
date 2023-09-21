@@ -76,16 +76,16 @@ print('====== 查找： ======')
 --   print('age', result[i].age)
 -- end
 
-print('====== 查找：找 id 小于 6 的记录 并 反过来排序 ======')
+print('====== 查找：找 id 小于 6 的记录，拿到的结果 我只要 3 条，并 反过来排序 ======')
 
-local result = Users:find({id = {'<', 6}}, 3, true)
+local result = Users:find({id = {'<', 6}}, 3, true) -- true 参数就是 逆向排序，不加就正排
 for i = 1, #result do
   print('id', result[i].id)
   print('name', result[i].name)
   print('age', result[i].age)
 end
 
-print('====== 查找：查找条件 同上，但根据 年龄 进行排序 ======')
+print('====== 查找：查找条件 同上，但根据 年龄 进行排序，结果我也只要 3 条 ======')
 
 local result = Users:find({id = {'<', 6}}, 3, 'age')
 for i = 1, #result do
@@ -102,6 +102,20 @@ for i = 1, #result do
   print('name', result[i].name)
   print('age', result[i].age)
 end
+
+-- 第 1 开始，拿 2 条 什么意思呢？ 比如：
+--
+-- 偏移 | 数据
+-- 0   | id = 1
+-- 1   | id = 2 -- 从这里开始
+-- 2   | id = 3 -- 到这里结束
+-- 3   | id = 4
+-- 4   | id = 5
+--
+-- 从偏移 1 开始，拿 2 条，恰好到 偏移为 2 结束
+--
+-- 这个功能主要 用来做 【分页】 的
+-- 假设分页大小为 10，第一页展示 0 - 9，第二页展示 10 - 19
 
 print('====== 查找：查找条件 同上，但只要 1 条记录 ======')
 
