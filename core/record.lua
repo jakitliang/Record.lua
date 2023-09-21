@@ -183,10 +183,15 @@ function Record:commit()
 end
 
 function Record:transaction(callback)
+  local ok = true
   self:begin()
   callback(function ()
+    ok = false
     self:rollback()
   end)
+  if ok then
+    self:commit()
+  end
 end
 
 return Record
