@@ -51,12 +51,12 @@ print('====== Fetch All Result ======')
 
 print('====== Fetch One Result ======')
 
--- local result = Users:fetchOne()
--- for i = 1, #result do
---   print('id', result[i].id)
---   print('name', result[i].name)
---   print('age', result[i].age)
--- end
+local result = Users:fetchOne()
+if result then
+  print('id', result.id)
+  print('name', result.name)
+  print('age', result.age)
+end
 
 print('====== Fetch All Result ======')
 
@@ -99,10 +99,10 @@ end
 print('====== Find only One result ======')
 
 local result = Users:findOne({id = {'<', 6}})
-for i = 1, #result do
-  print('id', result[i].id)
-  print('name', result[i].name)
-  print('age', result[i].age)
+if result then
+  print('id', result.id)
+  print('name', result.name)
+  print('age', result.age)
 end
 
 print('====== Find id in set (2, 3) ======')
@@ -151,11 +151,11 @@ print()
 
 print('====== Find One ======')
 
-local rows = Users:findBy({id = 3}):fetchOne()
-for i = 1, #rows do
-  print('id', rows[i].id)
-  print('name', rows[i].name)
-  print('age', rows[i].age)
+local row = Users:findBy({id = 3}):fetchOne()
+if row then
+  print('id', row.id)
+  print('name', row.name)
+  print('age', row.age)
 end
 
 print('====== Find the user [id > 8] or [name = demo1] or [id = 2] ======')

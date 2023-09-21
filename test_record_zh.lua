@@ -56,12 +56,14 @@ print('====== 获取：所有记录 ======')
 
 print('====== 获取：只拉 1 条记录 ======')
 
--- local result = Users:fetchOne()
--- for i = 1, #result do
---   print('id', result[i].id)
---   print('name', result[i].name)
---   print('age', result[i].age)
--- end
+-- 只有 1 条记录了，所以不需要 for，但要判断 是否为空
+-- Tips: 这个 result 就是 Users 对象
+local result = Users:fetchOne()
+if result then
+  print('id', result.id)
+  print('name', result.name)
+  print('age', result.age)
+end
 
 print('====== 查找数据，请使用 find 和 findOne 方法 ======')
 
@@ -104,10 +106,10 @@ end
 print('====== 查找：查找条件 同上，但只要 1 条记录 ======')
 
 local result = Users:findOne({id = {'<', 6}})
-for i = 1, #result do
-  print('id', result[i].id)
-  print('name', result[i].name)
-  print('age', result[i].age)
+if result then
+  print('id', result.id)
+  print('name', result.name)
+  print('age', result.age)
 end
 
 print('====== 查找：查找 id 在 (2, 3) 这个集合中的数据 ======')
@@ -148,11 +150,11 @@ print()
 
 print('====== 找 1 条数据 ======')
 
-local rows = Users:findBy({id = 3}):fetchOne()
-for i = 1, #rows do
-  print('id', rows[i].id)
-  print('name', rows[i].name)
-  print('age', rows[i].age)
+local row = Users:findBy({id = 3}):fetchOne()
+if row then
+  print('id', row.id)
+  print('name', row.name)
+  print('age', row.age)
 end
 
 print('====== 找 1 条数据，条件为 [id > 8] 或 [name = demo1] 或 [id = 2] ======')

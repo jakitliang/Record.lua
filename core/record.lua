@@ -65,8 +65,10 @@ function Record:fetch(limit, order)
   return self:find(nil, limit, order)
 end
 
+--- Fetch one record
+--- @return table? result
 function Record:fetchOne()
-  return self:fetch(1)
+  return self:fetch(1)[1]
 end
 
 --- Find records by condition
@@ -94,9 +96,9 @@ end
 --- Find records by condition
 --- @param condition? table The conditions to filter the result
 --- @param order? boolean|string|table The order of result, eg: false(reverse) or {id, true}
---- @return table result
+--- @return table? result
 function Record:findOne(condition, order)
-  return self:find(condition, 1, order)
+  return self:find(condition, 1, order)[1]
 end
 
 --- Find records by condition
