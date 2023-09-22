@@ -13,6 +13,9 @@ local SQLiteDevice = Type(Device)
 
 function SQLiteDevice:new(file)
   self.db = file and SQLite.open(file) or SQLite.open_memory()
+  if file then
+    self.db:exec("PRAGMA journal_mode=WAL;")
+  end
 end
 
 function SQLiteDevice:lastId()
